@@ -8,60 +8,27 @@ file_extensions:
   - symbols.txt
 
 variables:
-  section_names: '\.init|extab(?:index)?|\.text|\.rodata|\.data|\.bss|\.sdata|\.sbss|\.sdata2|\.sbss2'
-  main_types: 'function|label|object'
-  symbol_scopes: 'global|weak|local'
-  data_types: 'byte|1byte|2byte|4byte|int|float|double'
+  section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
+  section_identifier: '[^\s]+'
 
 contexts:
+  ################
+  # main context #
+  ################
   main:
+    - meta_scope: meta.symbol.dtk-symbols
     - match: '[^\s=]+'
       scope: string.unquoted.symbol.dtk-symbols
     - match: '='
       scope: punctuation.other.dtk-symbols
-      push: section
+      push: location
 
-  section:
-    - include: numbers
-    - match: '(?<=\b|\s)({{section_names}})\b'
-      scope: storage.modifier.symbol-section.dtk-symbols
-    - match: ':'
-      scope: punctuation.other.dtk-symbols
-    - match: ';'
-      scope: punctuation.other.dtk-symbols
-      push: attributes
-
-  attributes:
-    - include: numbers
-    - match: '//'
-      scope: comment punctuation.other.attribute-marker.dtk-symbols
-    - match: '(type)(:)({{main_types}})'
-      captures:
-        1: keyword.other.attribute.dtk-symbols
-        2: punctuation.other.dtk-symbols
-        3: entity.name.main-type.dtk-symbols
-    - match: '(size)(:)'
-      captures:
-        1: keyword.other.attribute.dtk-symbols
-        2: punctuation.other.dtk-symbols
-        # including the numbers context should take care of the number
-    - match: '(scope)(:)({{symbol_scopes}})'
-      captures:
-        1: keyword.other.attribute.dtk-symbols
-        2: punctuation.other.dtk-symbols
-        3: entity.name.scope.dtk-symbols
-    - match: '(data)(:)({{data_types}})'
-      captures:
-        1: keyword.other.attribute.dtk-symbols
-        2: punctuation.other.dtk-symbols
-        3: entity.name.data-type.dtk-symbols
-    - match: 'hidden'
-      scope: keyword.other.attribute.dtk-symbols
-    - match: 'noreloc'
-      scope: keyword.other.attribute.dtk-symbols
-
-    - match: '$'
-      pop: 2
+  ###################
+  # helper contexts #
+  ###################
+  pop_at_boundary:
+    - match: '\s'
+      pop: 1
 
   # mostly taken from the C syntax
   numbers:
@@ -75,7 +42,96 @@ contexts:
     # decimal integer
     - match: '\d+'
       scope: meta.number.integer.decimal.dtk-symbols
+             constant.numeric.value.dtk-symbols
+
+  ################
+  # sub-contexts #
+  ################
+  location:
+    - match: '({{section_names}})(:)'
       captures:
-        1: keyword.operator.arithmetic.dtk-symbols
-        2: constant.numeric.value.dtk-symbols
-        3: constant.numeric.suffix.dtk-symbols
+        1: entity.name.section.dtk-symbols constant.language.section.dtk-symbols
+        2: punctuation.separator.dtk-symbols
+      push:
+        - include: numbers
+        - match: ';'
+          scope: punctuation.separator.dtk-symbols
+          set: attributes
+
+    # any other unknown section names
+    - match: '({{section_identifier}})(:)'
+      captures:
+        1: entity.name.section.dtk-symbols
+        2: punctuation.separator.dtk-symbols
+      push:
+        - include: numbers
+        - match: ';'
+          scope: punctuation.separator.dtk-symbols
+          set: attributes
+
+    - match: '(?<=\b|\s)({{section_names}})\b'
+      scope: meta.name.section.dtk-symbols
+    - match: ':'
+      scope: punctuation.separator.dtk-symbols
+    - match: ';'
+      scope: punctuation.other.dtk-symbols
+      push: attributes
+
+  attributes:
+    - clear_scopes: 1
+    - meta_content_scope: meta.symbol.attributes.dtk-symbols
+
+    - match: '//'
+      scope: comment punctuation.other.attribute-marker.dtk-symbols
+
+    - match: '(type)(:)'
+      captures:
+        1: entity.other.attribute-name.dtk-symbols keyword.other.type.dtk-symbols
+        2: punctuation.separator.dtk-symbols
+      push:
+        - include: pop_at_boundary
+        - match: '\w+'
+          scope: string.unquoted.dtk-symbols
+
+    - match: '(size)(:)'
+      captures:
+        1: entity.other.attribute-name.dtk-symbols
+        2: punctuation.separator.dtk-symbols
+      push:
+        - include: pop_at_boundary
+        - include: numbers
+
+    - match: '(scope)(:)'
+      captures:
+        1: entity.other.attribute-name.dtk-symbols
+        2: punctuation.separator.dtk-symbols
+      push:
+        - include: pop_at_boundary
+        - match: '\w+'
+          scope: string.unquoted.dtk-symbols
+
+    - match: '(align)(:)'
+      captures:
+        1: entity.other.attribute-name.dtk-symbols
+        2: punctuation.separator.dtk-symbols
+      push:
+        - include: pop_at_boundary
+        - include: numbers
+
+    - match: '(data)(:)'
+      captures:
+        1: entity.other.attribute-name.dtk-symbols
+        2: punctuation.separator.dtk-symbols
+      push:
+        - include: pop_at_boundary
+        - match: '\w+'
+          scope: string.unquoted.dtk-symbols
+
+    - match: 'hidden'
+      scope: entity.other.attribute-name.dtk-symbols
+
+    - match: 'noreloc'
+      scope: entity.other.attribute-name.dtk-symbols
+
+    - match: '$'
+      pop: 2

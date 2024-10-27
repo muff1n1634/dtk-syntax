@@ -8,10 +8,8 @@ file_extensions:
   - splits.txt
 
 variables:
-  identifier_section_known: '(?:\.init|extab(?:index)?|\.(text|[cd]tors|(ro)?data|bss|s(data|bss)2?))'
-  identifier_section: '[^\s]+'
-
-  section_types: 'code|rodata|data|bss'
+  section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
+  section_identifier: '[^\s]+'
 
 contexts:
   ################
@@ -21,15 +19,15 @@ contexts:
     # the special Sections split at the top of the file
     - match: '(Sections)(:)'
       captures:
-        1: support.type.sections.dtk-splits
-        2: punctuation.other.dtk-splits
-      push: sections-def
+        1: keyword.other.section-def.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push: section-defs
 
     - match: '^([^\s:]+)(:)'
       captures:
-        1: entity.name.file.dtk-symbols
-           entity.name.namespace.dtk-symbols # only to put in symbol list
-        2: punctuation.other.dtk-splits
+        1: string.unquoted.split-file-name.dtk-splits
+           entity.name.namespace.dtk-splits # hack to get it into the symbol table
+        2: punctuation.separator.dtk-splits
       push: splits
 
   ###################
@@ -43,55 +41,85 @@ contexts:
     - match: '(?=^([^\s:]+)(:))'
       pop: 2
 
+  pop_at_boundary:
+    - match: '(?=[\s\n])'
+      pop: 1
+
   # mostly taken from the C syntax
   numbers:
     # hexadecimal integer
     - match: '\b(0[Xx])(\h*)'
-      scope: meta.number.integer.hexadecimal.dtk-symbols
+      scope: meta.number.integer.hexadecimal.dtk-splits
       captures:
-        1: constant.numeric.base.dtk-symbols
-        2: constant.numeric.value.dtk-symbols
+        1: constant.numeric.base.dtk-splits
+        2: constant.numeric.value.dtk-splits
 
     # decimal integer
     - match: '\d+'
-      scope: meta.number.integer.decimal.dtk-symbols
-             constant.numeric.value.dtk-symbols
+      scope: meta.number.integer.decimal.dtk-splits
+             constant.numeric.value.dtk-splits
 
   ################
   # sub-contexts #
   ################
 
   # section definition contexts (the first one at the top of the file)
-  sections-def:
-    - meta_content_scope: meta.section-def.dtk-splits
+  section-defs:
+    - meta_scope: meta.section-def.dtk-splits
     - include: pop_at_new_split
 
-    - match: '{{identifier_section_known}}'
-      scope: constant.language.dtk-splits
-      push: sections-def-attrs
-    - match: '{{identifier_section}}'
-      scope: entity.name.section.dtk-splits
-      push: sections-def-attrs
+    - match: '{{section_names}}'
+      scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
+      push: section-def-attrs
 
-  sections-def-attrs:
-    - include: numbers
+    # any other unknown section names
+    - match: '{{section_identifier}}'
+      scope: string.unquoted.dtk-splits
+      push: section-def-attrs
+
+  section-def-attrs:
+    - clear_scopes: 1
+    - meta_scope: meta.section-def.attribute.dtk-splits
+
     - include: pop_at_newline
     - include: pop_at_new_split
-    - match: '(type)(:)({{section_types}})'
+
+    - match: '(type)(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
-        2: punctuation.other.dtk-splits
-        3: storage.modifier.section-type.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.section-def.attribute.dtk-splits
+        - include: pop_at_boundary
+        - match: '\w+'
+          scope: string.unquoted.dtk-splits
+
     - match: '(align)(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
-        2: punctuation.other.dtk-splits
-        # including the numbers context should take care of the number
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.section-def.attribute.dtk-splits
+        - include: pop_at_boundary
+        - include: numbers
+
+    # unknown attributes
+    - match: '(\w+)(:)'
+      captures:
+        1: entity.other.attribute-name.unknown.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.section-def.attribute.dtk-splits
+        - include: pop_at_boundary
+        - match: '[^\s]+'
+          scope: string.unquoted.dtk-splits
 
   # split contexts
   splits:
-    - meta_content_scope: meta.split.dtk-splits
-    - include: numbers
+    - meta_scope: meta.split.file.dtk-splits
     - include: pop_at_new_split
 
     # these are specifically the attributes of the file being split, not the
@@ -99,35 +127,74 @@ contexts:
     - match: '(order)(:)'
       captures:
         1: entity.other.attribute-name.order.dtk-splits
-        2: punctuation.other.dtk-splits
-        # including the numbers context should take care of the number
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.file.attribute.dtk-splits
+        - include: pop_at_boundary
+        - include: numbers
+
+    # unknown attributes
+    - match: '(\w+)(:)'
+      captures:
+        1: entity.other.attribute-name.unknown.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.file.attribute.dtk-splits
+        - include: pop_at_boundary
+        - match: '[^\s]+'
+          scope: string.unquoted.dtk-splits
 
     - match: '$'
       set: split-sections
 
   split-sections:
+    - meta_scope: meta.split.dtk-splits
     - include: pop_at_new_split
-    - match: '{{identifier_section_known}}'
-      scope: constant.language.dtk-splits
+
+    - match: '{{section_names}}'
+      scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: split-attrs
 
-    - match: '{{identifier_section}}'
-      scope: entity.name.section.dtk-splits
+    # any other unknown section names
+    - match: '{{section_identifier}}'
+      scope: string.unquoted.dtk-splits
       push: split-attrs
 
   split-attrs:
-    - include: numbers
     - include: pop_at_newline
     - include: pop_at_new_split
 
     - match: '(start|end)(:)'
       captures:
-        1: keyword.control.location.dtk-splits
-        2: punctuation.other.dtk-splits
+        1: entity.other.attribute-name.location.dtk-splits keyword.other.location.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.attribute.dtk-splits
+        - include: pop_at_boundary
+        - include: numbers
 
-    - match: '(rename)(:)([^\s]+)'
+    - match: '(rename)(:)'
       captures:
         1: entity.other.attribute-name.rename.dtk-splits
-        2: punctuation.other.dtk-splits
-        3: string.unquoted.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.attribute.dtk-splits
+        - include: pop_at_boundary
+        - match: '[^\s]+'
+          scope: string.unquoted.dtk-splits
 
+    # unknown attributes
+    - match: '(\w+)(:)'
+      captures:
+        1: entity.other.attribute-name.unknown.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.attribute.dtk-splits
+        - include: pop_at_boundary
+        - match: '[^\s]+'
+          scope: string.unquoted.dtk-splits
