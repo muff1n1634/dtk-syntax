@@ -1,0 +1,81 @@
+%YAML 1.2
+---
+name: decomp-toolkit symbols.txt
+scope: source.dtk-symbols
+version: 2
+
+file_extensions:
+  - symbols.txt
+
+variables:
+  section_names: '\.init|extab(?:index)?|\.text|\.rodata|\.data|\.bss|\.sdata|\.sbss|\.sdata2|\.sbss2'
+  main_types: 'function|label|object'
+  symbol_scopes: 'global|weak|local'
+  data_types: 'byte|1byte|2byte|4byte|int|float|double'
+
+contexts:
+  main:
+    - match: '[^\s=]+'
+      scope: string.unquoted.symbol.dtk-symbols
+    - match: '='
+      scope: punctuation.other.dtk-symbols
+      push: section
+
+  section:
+    - include: numbers
+    - match: '(?<=\b|\s)({{section_names}})\b'
+      scope: storage.modifier.symbol-section.dtk-symbols
+    - match: ':'
+      scope: punctuation.other.dtk-symbols
+    - match: ';'
+      scope: punctuation.other.dtk-symbols
+      push: attributes
+
+  attributes:
+    - include: numbers
+    - match: '//'
+      scope: comment punctuation.other.attribute-marker.dtk-symbols
+    - match: '(type)(:)({{main_types}})'
+      captures:
+        1: keyword.other.attribute.dtk-symbols
+        2: punctuation.other.dtk-symbols
+        3: entity.name.main-type.dtk-symbols
+    - match: '(size)(:)'
+      captures:
+        1: keyword.other.attribute.dtk-symbols
+        2: punctuation.other.dtk-symbols
+        # including the numbers context should take care of the number
+    - match: '(scope)(:)({{symbol_scopes}})'
+      captures:
+        1: keyword.other.attribute.dtk-symbols
+        2: punctuation.other.dtk-symbols
+        3: entity.name.scope.dtk-symbols
+    - match: '(data)(:)({{data_types}})'
+      captures:
+        1: keyword.other.attribute.dtk-symbols
+        2: punctuation.other.dtk-symbols
+        3: entity.name.data-type.dtk-symbols
+    - match: 'hidden'
+      scope: keyword.other.attribute.dtk-symbols
+    - match: 'noreloc'
+      scope: keyword.other.attribute.dtk-symbols
+
+    - match: '$'
+      pop: 2
+
+  # mostly taken from the C syntax
+  numbers:
+    # hexadecimal integer
+    - match: '\b(0[Xx])(\h*)'
+      scope: meta.number.integer.hexadecimal.dtk-symbols
+      captures:
+        1: constant.numeric.base.dtk-symbols
+        2: constant.numeric.value.dtk-symbols
+
+    # decimal integer
+    - match: '\d+'
+      scope: meta.number.integer.decimal.dtk-symbols
+      captures:
+        1: keyword.operator.arithmetic.dtk-symbols
+        2: constant.numeric.value.dtk-symbols
+        3: constant.numeric.suffix.dtk-symbols
