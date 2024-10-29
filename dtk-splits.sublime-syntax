@@ -118,7 +118,7 @@ contexts:
         - include: pop_at_boundary
         - include: numbers
 
-    # unknown attributes
+    # unknown key-value attributes
     - match: '(\w+)(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
@@ -129,6 +129,14 @@ contexts:
         - include: pop_at_boundary
         - match: '[^\s]+'
           scope: string.unquoted.dtk-splits
+
+    # unknown key-only attributes
+    - match: '\w+'
+      scope: entity.other.attribute-name.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.section-def.attribute.dtk-splits
+        - include: pop_at_boundary
 
   # split contexts
   splits:
@@ -147,7 +155,7 @@ contexts:
         - include: pop_at_boundary
         - include: numbers
 
-    # unknown attributes
+    # unknown key-value attributes
     - match: '(\w+)(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
@@ -158,6 +166,14 @@ contexts:
         - include: pop_at_boundary
         - match: '[^\s]+'
           scope: string.unquoted.dtk-splits
+
+    # unknown key-only attributes
+    - match: '\w+'
+      scope: entity.other.attribute-name.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.file.attribute.dtk-splits
+        - include: pop_at_boundary
 
     - match: '$'
       set: split-sections
@@ -212,7 +228,7 @@ contexts:
         - include: pop_at_boundary
         - include: numbers
 
-    # unknown attributes
+    # unknown key-value attributes
     - match: '(\w+)(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
@@ -223,3 +239,11 @@ contexts:
         - include: pop_at_boundary
         - match: '[^\s]+'
           scope: string.unquoted.dtk-splits
+
+    # unknown key-only attributes
+    - match: '\w+'
+      scope: entity.other.attribute-name.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.attribute.dtk-splits
+        - include: pop_at_boundary
