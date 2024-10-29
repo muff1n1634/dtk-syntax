@@ -59,7 +59,7 @@ contexts:
   # sub-contexts #
   ################
   address:
-    - match: '({{section_names}})(:)'
+    - match: '({{section_names}})\s*(:)'
       captures:
         1: entity.name.section.dtk-symbols constant.language.section.dtk-symbols
         2: punctuation.separator.dtk-symbols
@@ -70,7 +70,7 @@ contexts:
           scope: punctuation.terminator.dtk-symbols
           set: attribute-list-marker
 
-    - match: '({{section_identifier}})(:)'
+    - match: '({{section_identifier}})\s*(:)'
       captures:
         1: entity.name.section.dtk-symbols
         2: punctuation.separator.dtk-symbols
