@@ -10,7 +10,7 @@ file_extensions:
 variables:
   split_file_name: '^\s*(?:[^\s:]+)'
   section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
-  section_identifier: '[^\s]+'
+  section_identifier: '\S+'
 
 contexts:
   # NOTE: just for comments in syntax_tests; the actual format does not support
@@ -53,13 +53,13 @@ contexts:
       pop: 2
 
   pop_at_boundary:
-    - match: '(?=[\s\n])'
+    - match: '(?=\s)'
       pop: 1
 
   # mostly taken from the C syntax
   numbers:
     # hexadecimal integer
-    - match: '\b(0[Xx])(\h*)'
+    - match: '\b(0[Xx])([[:xdigit:]]*)'
       scope: meta.number.integer.hexadecimal.dtk-splits
       captures:
         1: constant.numeric.base.dtk-splits
@@ -127,7 +127,7 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.section-def.attribute.dtk-splits
         - include: pop_at_boundary
-        - match: '[^\s]+'
+        - match: '\S+'
           scope: string.unquoted.dtk-splits
 
     # unknown key-only attributes
@@ -144,7 +144,7 @@ contexts:
     - include: pop_at_new_split
 
     # these are specifically the attributes of the file being split, not the
-    # splits themselves
+    # attributes of the splits themselves
     - match: '(order)(:)'
       captures:
         1: entity.other.attribute-name.order.dtk-splits
@@ -164,7 +164,7 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.split.file.attribute.dtk-splits
         - include: pop_at_boundary
-        - match: '[^\s]+'
+        - match: '\S+'
           scope: string.unquoted.dtk-splits
 
     # unknown key-only attributes
@@ -215,7 +215,7 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.split.attribute.dtk-splits
         - include: pop_at_boundary
-        - match: '[^\s]+'
+        - match: '\S+'
           scope: string.unquoted.dtk-splits
 
     - match: '(align)(:)'
@@ -237,7 +237,7 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.split.attribute.dtk-splits
         - include: pop_at_boundary
-        - match: '[^\s]+'
+        - match: '\S+'
           scope: string.unquoted.dtk-splits
 
     # unknown key-only attributes
