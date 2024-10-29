@@ -1,0 +1,147 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: decomp-toolkit symbols.txt
+scopeName: source.dtk-symbols
+fileTypes: [symbols.txt]
+
+patterns:
+  - include: '#comments'
+
+  - begin: '([^\s=]+)\s*(=)\s*'
+    beginCaptures:
+      '1': {name: string.unquoted.symbol.dtk-symbols}
+      '2': {name: punctuation.separator.dtk-symbols}
+    name: meta.symbol.dtk-symbols
+    end: '$'
+    patterns:
+      - include: '#address'
+      - include: '#attributes'
+
+repository:
+  # NOTE: just for comments in syntax_tests; the actual format does not support
+  # comments
+  comments:
+    patterns:
+    - begin: '#'
+      beginCaptures:
+        '1': {name: punctuation.definition.comment.dtk-symbols}
+      name: comment.line.number-sign.dtk-symbols
+      end: '$'
+
+  # mostly taken from the C syntax
+  numbers:
+    patterns:
+      # hexadecimal integer
+      - match: '\b(0[Xx])([[:xdigit:]]*)'
+        name: meta.number.integer.hexadecimal.dtk-symbols
+        captures:
+          '1': {name: constant.numeric.base.dtk-symbols}
+          '2': {name: constant.numeric.value.dtk-symbols}
+
+      # decimal integer
+      - match: '\d+'
+        name: meta.number.integer.decimal.dtk-symbols constant.numeric.value.dtk-symbols
+
+  ################
+  # sub-contexts #
+  ################
+  address:
+    patterns:
+      - begin: '(\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?))\s*(:)'
+        beginCaptures:
+          '1': {name: entity.name.section.dtk-symbols constant.language.section.dtk-symbols}
+          '2': {name: punctuation.separator.dtk-symbols}
+        name: meta.symbol.address.dtk-symbols
+        end: ';'
+        endCaptures:
+          '0': {name: punctuation.terminator.dtk-symbols}
+        patterns:
+          - include: '#numbers'
+
+      - begin: '(\S+)\s*(:)'
+        beginCaptures:
+          '1': {name: entity.name.section.dtk-symbols}
+          '2': {name: punctuation.separator.dtk-symbols}
+        name: meta.symbol.address.dtk-symbols
+        end: ';'
+        endCaptures:
+          '0': {name: punctuation.terminator.dtk-symbols}
+        patterns:
+          - include: '#numbers'
+
+  attributes:
+    patterns:
+      - begin: '//'
+        beginCaptures:
+          '0': {name: punctuation.definition.comment.dtk-symbols comment.line.double-slash.dtk-symbols}
+        name: meta.symbol.attribute-list.dtk-symbols
+        end: '$'
+        patterns:
+          - begin: '(type)(:)'
+            beginCaptures:
+              '1': {name: entity.other.attribute-name.type.dtk-symbols keyword.other.type.dtk-symbols}
+              '2': {name: punctuation.separator.key-value.dtk-symbols}
+            name: meta.symbol.attribute-list.attribute.dtk-symbols
+            end: '(?=\s)'
+            patterns:
+              - match: '\w+'
+                name: string.unquoted.dtk-symbols
+
+          - begin: '(size)(:)'
+            beginCaptures:
+              '1': {name: entity.other.attribute-name.size.dtk-symbols}
+              '2': {name: punctuation.separator.key-value.dtk-symbols}
+            name: meta.symbol.attribute-list.attribute.dtk-symbols
+            end: '(?=\s)'
+            patterns:
+              - include: '#numbers'
+
+          - begin: '(scope)(:)'
+            beginCaptures:
+              '1': {name: entity.other.attribute-name.scope.dtk-symbols}
+              '2': {name: punctuation.separator.key-value.dtk-symbols}
+            name: meta.symbol.attribute-list.attribute.dtk-symbols
+            end: '(?=\s)'
+            patterns:
+              - match: '\w+'
+                name: string.unquoted.dtk-symbols
+
+          - begin: '(align)(:)'
+            beginCaptures:
+              '1': {name: entity.other.attribute-name.align.dtk-symbols}
+              '2': {name: punctuation.separator.key-value.dtk-symbols}
+            name: meta.symbol.attribute-list.attribute.dtk-symbols
+            end: '(?=\s)'
+            patterns:
+              - include: '#numbers'
+
+          - begin: '(data)(:)'
+            beginCaptures:
+              '1': {name: entity.other.attribute-name.data.dtk-symbols}
+              '2': {name: punctuation.separator.key-value.dtk-symbols}
+            name: meta.symbol.attribute-list.attribute.dtk-symbols
+            end: '(?=\s)'
+            patterns:
+              - match: '\w+'
+                name: string.unquoted.dtk-symbols
+
+          # unknown key-value attributes
+          - begin: '(\w+)(:)'
+            beginCaptures:
+              '1': {name: entity.other.attribute-name.dtk-symbols}
+              '2': {name: punctuation.separator.key-value.dtk-symbols}
+            name: meta.symbol.attribute-list.attribute.dtk-symbols
+            end: '(?=\s)'
+            patterns:
+              - match: '\S+'
+                name: string.unquoted.dtk-symbols
+
+          - match: 'hidden'
+            name: meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.hidden.dtk-symbols
+
+          - match: 'noreloc'
+            name: meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.noreloc.dtk-symbols
+
+          # unknown key-only attributes
+          - match: '\w+'
+            name: meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.dtk-symbols
