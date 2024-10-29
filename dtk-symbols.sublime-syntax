@@ -173,7 +173,7 @@ contexts:
         - include: pop_at_boundary
 
     # unknown key-only attributes
-    - match: '(\w+)'
+    - match: '\w+'
       scope: entity.other.attribute-name.dtk-symbols
       push:
         - clear_scopes: 1
