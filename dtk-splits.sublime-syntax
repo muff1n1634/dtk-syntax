@@ -91,9 +91,7 @@ contexts:
   section-def-attrs:
     - clear_scopes: 1
     - meta_scope: meta.section-def.dtk-splits
-
     - include: pop_at_newline
-    - include: pop_at_new_split
 
     - match: '(type)(:)'
       captures:
@@ -139,7 +137,6 @@ contexts:
   # split contexts
   split-file-attrs:
     - meta_scope: meta.split.file.dtk-splits
-    - include: pop_at_new_split
 
     # these are specifically the attributes of the file being split, not the
     # attributes of the splits themselves
@@ -191,7 +188,6 @@ contexts:
 
   split-attrs:
     - include: pop_at_newline
-    - include: pop_at_new_split
 
     - match: '(start|end)(:)'
       captures:
