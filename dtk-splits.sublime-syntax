@@ -39,7 +39,7 @@ contexts:
         1: entity.other.split.file-name.dtk-splits
            entity.name.namespace.dtk-splits # hack to get it into the symbol table
         2: punctuation.separator.dtk-splits
-      push: splits
+      push: split-file-attrs
 
   ###################
   # helper contexts #
@@ -137,7 +137,7 @@ contexts:
         - include: pop_at_boundary
 
   # split contexts
-  splits:
+  split-file-attrs:
     - meta_scope: meta.split.file.dtk-splits
     - include: pop_at_new_split
 
