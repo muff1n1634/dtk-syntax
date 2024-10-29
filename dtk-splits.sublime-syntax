@@ -79,7 +79,7 @@ contexts:
     - meta_scope: meta.section-def.dtk-splits
     - include: pop_at_new_split
 
-    - match: '{{section_names}}'
+    - match: '\s({{section_names}})\s'
       scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: section-def-attrs
 
@@ -177,7 +177,7 @@ contexts:
     - meta_scope: meta.split.dtk-splits
     - include: pop_at_new_split
 
-    - match: '{{section_names}}'
+    - match: '\s({{section_names}})\s'
       scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: split-attrs
 
