@@ -79,15 +79,13 @@ contexts:
     - meta_scope: meta.section-def.dtk-splits
     - include: pop_at_new_split
 
-    - match: '({{section_names}})\s+'
-      captures:
-        1: entity.name.section.dtk-splits constant.language.section.dtk-splits
+    - match: '{{section_names}}'
+      scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: section-def-attrs
 
     # any other unknown section names
-    - match: '({{section_identifier}})\s+'
-      captures:
-        1: entity.name.section.dtk-splits
+    - match: '{{section_identifier}}'
+      scope: entity.name.section.dtk-splits
       push: section-def-attrs
 
   section-def-attrs:
@@ -182,15 +180,13 @@ contexts:
     - meta_scope: meta.split.dtk-splits
     - include: pop_at_new_split
 
-    - match: '({{section_names}})\s+'
-      captures:
-        1: entity.name.section.dtk-splits constant.language.section.dtk-splits
+    - match: '{{section_names}}'
+      scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: split-attrs
 
     # any other unknown section names
-    - match: '({{section_identifier}})\s+'
-      captures:
-        1: entity.name.section.dtk-splits
+    - match: '{{section_identifier}}'
+      scope: entity.name.section.dtk-splits
       push: split-attrs
 
   split-attrs:
