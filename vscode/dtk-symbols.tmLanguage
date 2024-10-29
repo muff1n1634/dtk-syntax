@@ -7,7 +7,7 @@
 		<string>symbols.txt</string>
 	</array>
 	<key>name</key>
-	<string>decomp-toolkit symbols.txt</string>
+	<string>decomp-toolkit symbols.txt tmLanguage</string>
 	<key>patterns</key>
 	<array>
 		<dict>

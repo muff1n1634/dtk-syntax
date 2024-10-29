@@ -1,6 +1,6 @@
 # [PackageDev] target_format: plist, ext: tmLanguage
 ---
-name: decomp-toolkit symbols.txt
+name: decomp-toolkit symbols.txt tmLanguage
 scopeName: source.dtk-symbols
 fileTypes: [symbols.txt]
 

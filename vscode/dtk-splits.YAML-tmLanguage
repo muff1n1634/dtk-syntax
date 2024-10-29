@@ -1,6 +1,6 @@
 # [PackageDev] target_format: plist, ext: tmLanguage
 ---
-name: decomp-toolkit splits.txt
+name: decomp-toolkit splits.txt tmLanguage
 scopeName: source.dtk-splits
 fileTypes: [splits.txt]
 
@@ -111,7 +111,7 @@ repository:
   # split contexts
   splits:
     patterns:
-      - begin: '(?<=:)'
+      - begin: '(?<!\n)(?<=:)'
         name: meta.split.file.dtk-splits
         end: '$'
         patterns:
