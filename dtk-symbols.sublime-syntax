@@ -70,10 +70,8 @@ contexts:
         - include: numbers
         - match: '(;)'
           scope: punctuation.terminator.dtk-symbols
-          set:
-            - match: '\s*'
-              scope: meta.symbol.dtk-symbols
-              set: attribute-list-marker
+          set: attribute-list-marker
+
     - match: '({{section_identifier}})(:)'
       captures:
         1: entity.name.section.dtk-symbols
