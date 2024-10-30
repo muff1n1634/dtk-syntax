@@ -111,37 +111,37 @@ repository:
   # split contexts
   splits:
     patterns:
-      - begin: '(?<!\n)(?<=:)'
-        name: meta.split.file.dtk-splits
-        end: '$'
+      # these are specifically the attributes of the file being split, not the
+      # attributes of the splits themselves
+      - begin: '(order)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.order.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.split.file.attribute.dtk-splits
+        end: '(?=\s)'
         patterns:
-        # these are specifically the attributes of the file being split, not the
-        # attributes of the splits themselves
-        - begin: '(order)(:)'
-          beginCaptures:
-            '1': {name: entity.other.attribute-name.order.dtk-splits}
-            '2': {name: punctuation.separator.dtk-splits}
-          name: meta.split.file.attribute.dtk-splits
-          end: '(?=\s)'
-          patterns:
-            - include: '#numbers'
+          - include: '#numbers'
 
-        # unknown key-value attributes
-        - begin: '(\w+)(:)'
-          beginCaptures:
-            '1': {name: entity.other.attribute-name.dtk-splits}
-            '2': {name: punctuation.separator.dtk-splits}
-          name: meta.split.file.attribute.dtk-splits
-          end: '(?=\s)'
-          patterns:
-            - match: '\S+'
-              name: string.unquoted.dtk-splits
+      # unknown key-value attributes
+      - begin: '(\w+)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.split.file.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - match: '\S+'
+            name: string.unquoted.dtk-splits
 
-        # unknown key-only attributes
-        - match: '\w+'
-          name: meta.split.file.attribute.dtk-splits entity.other.attribute-name.dtk-splits
+      # unknown key-only attributes
+      - match: '\w+'
+        name: meta.split.file.attribute.dtk-splits entity.other.attribute-name.dtk-splits
 
-      - include: '#split-sections'
+      - begin: '$'
+        end: '(?=^\s*[^\s:]+:)'
+        patterns:
+          - include: '#comments'
+          - include: '#split-sections'
 
   split-sections:
     patterns:

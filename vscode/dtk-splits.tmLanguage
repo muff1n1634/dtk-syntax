@@ -469,82 +469,84 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>(?&lt;!\n)(?&lt;=:)</string>
+					<string>(order)(:)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>entity.other.attribute-name.order.dtk-splits</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.separator.dtk-splits</string>
+						</dict>
+					</dict>
 					<key>end</key>
-					<string>$</string>
+					<string>(?=\s)</string>
 					<key>name</key>
-					<string>meta.split.file.dtk-splits</string>
+					<string>meta.split.file.attribute.dtk-splits</string>
 					<key>patterns</key>
 					<array>
 						<dict>
-							<key>begin</key>
-							<string>(order)(:)</string>
-							<key>beginCaptures</key>
-							<dict>
-								<key>1</key>
-								<dict>
-									<key>name</key>
-									<string>entity.other.attribute-name.order.dtk-splits</string>
-								</dict>
-								<key>2</key>
-								<dict>
-									<key>name</key>
-									<string>punctuation.separator.dtk-splits</string>
-								</dict>
-							</dict>
-							<key>end</key>
-							<string>(?=\s)</string>
-							<key>name</key>
-							<string>meta.split.file.attribute.dtk-splits</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>include</key>
-									<string>#numbers</string>
-								</dict>
-							</array>
-						</dict>
-						<dict>
-							<key>begin</key>
-							<string>(\w+)(:)</string>
-							<key>beginCaptures</key>
-							<dict>
-								<key>1</key>
-								<dict>
-									<key>name</key>
-									<string>entity.other.attribute-name.dtk-splits</string>
-								</dict>
-								<key>2</key>
-								<dict>
-									<key>name</key>
-									<string>punctuation.separator.dtk-splits</string>
-								</dict>
-							</dict>
-							<key>end</key>
-							<string>(?=\s)</string>
-							<key>name</key>
-							<string>meta.split.file.attribute.dtk-splits</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>match</key>
-									<string>\S+</string>
-									<key>name</key>
-									<string>string.unquoted.dtk-splits</string>
-								</dict>
-							</array>
-						</dict>
-						<dict>
-							<key>match</key>
-							<string>\w+</string>
-							<key>name</key>
-							<string>meta.split.file.attribute.dtk-splits entity.other.attribute-name.dtk-splits</string>
+							<key>include</key>
+							<string>#numbers</string>
 						</dict>
 					</array>
 				</dict>
 				<dict>
-					<key>include</key>
-					<string>#split-sections</string>
+					<key>begin</key>
+					<string>(\w+)(:)</string>
+					<key>beginCaptures</key>
+					<dict>
+						<key>1</key>
+						<dict>
+							<key>name</key>
+							<string>entity.other.attribute-name.dtk-splits</string>
+						</dict>
+						<key>2</key>
+						<dict>
+							<key>name</key>
+							<string>punctuation.separator.dtk-splits</string>
+						</dict>
+					</dict>
+					<key>end</key>
+					<string>(?=\s)</string>
+					<key>name</key>
+					<string>meta.split.file.attribute.dtk-splits</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>match</key>
+							<string>\S+</string>
+							<key>name</key>
+							<string>string.unquoted.dtk-splits</string>
+						</dict>
+					</array>
+				</dict>
+				<dict>
+					<key>match</key>
+					<string>\w+</string>
+					<key>name</key>
+					<string>meta.split.file.attribute.dtk-splits entity.other.attribute-name.dtk-splits</string>
+				</dict>
+				<dict>
+					<key>begin</key>
+					<string>$</string>
+					<key>end</key>
+					<string>(?=^\s*[^\s:]+:)</string>
+					<key>patterns</key>
+					<array>
+						<dict>
+							<key>include</key>
+							<string>#comments</string>
+						</dict>
+						<dict>
+							<key>include</key>
+							<string>#split-sections</string>
+						</dict>
+					</array>
 				</dict>
 			</array>
 		</dict>
