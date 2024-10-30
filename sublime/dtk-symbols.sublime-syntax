@@ -9,19 +9,23 @@ file_extensions:
 
 variables:
   section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
-  section_identifier: '[^\s]+'
+  section_identifier: '\S+'
 
 contexts:
-  main:
-    # NOTE: just for comments in syntax_tests; the actual format does not
-    # support comments
+  # NOTE: just for comments in syntax_tests; the actual format does not support
+  # comments
+  prototype:
     - match: '#'
-      scope: punctuation.definition.comment.dtk-symbols
+      scope: punctuation.definition.comment.dtk-splits
       push:
-        - meta_scope: comment.line.number-sign.dtk-symbols
+        - meta_scope: comment.line.number-sign.dtk-splits
         - match: '$'
           pop: true
 
+  ################
+  # main context #
+  ################
+  main:
     - match: '([^\s=]+)\s*(=)\s*'
       captures:
         1: string.unquoted.symbol.dtk-symbols
@@ -37,16 +41,10 @@ contexts:
     - match: '(?=\s)'
       pop: 1
 
-  # pop 2 here because this should only be used by the time the stack is in
-  # the attributes context
-  pop_at_newline:
-    - match: '$'
-      pop: 2
-
   # mostly taken from the C syntax
   numbers:
     # hexadecimal integer
-    - match: '\b(0[Xx])(\h*)'
+    - match: '\b(0[Xx])([[:xdigit:]]*)'
       scope: meta.number.integer.hexadecimal.dtk-symbols
       captures:
         1: constant.numeric.base.dtk-symbols
@@ -61,27 +59,25 @@ contexts:
   # sub-contexts #
   ################
   address:
-    - match: '({{section_names}})(:)'
+    - match: '({{section_names}})\s*(:)'
       captures:
         1: entity.name.section.dtk-symbols constant.language.section.dtk-symbols
         2: punctuation.separator.dtk-symbols
       push:
         - meta_scope: meta.symbol.address.dtk-symbols
         - include: numbers
-        - match: '(;)'
+        - match: ';'
           scope: punctuation.terminator.dtk-symbols
-          set:
-            - match: '\s*'
-              scope: meta.symbol.dtk-symbols
-              set: attribute-list-marker
-    - match: '({{section_identifier}})(:)'
+          set: attribute-list-marker
+
+    - match: '({{section_identifier}})\s*(:)'
       captures:
         1: entity.name.section.dtk-symbols
         2: punctuation.separator.dtk-symbols
       push:
         - meta_scope: meta.symbol.address.dtk-symbols
         - include: numbers
-        - match: '(;)'
+        - match: ';'
           scope: punctuation.terminator.dtk-symbols
           set: attribute-list-marker
 
@@ -94,7 +90,6 @@ contexts:
         - include: attributes
 
   attributes:
-    - include: pop_at_newline
     - match: '(type)(:)'
       captures:
         1: entity.other.attribute-name.type.dtk-symbols keyword.other.type.dtk-symbols
@@ -157,7 +152,7 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
         - include: pop_at_boundary
-        - match: '\w+'
+        - match: '\S+'
           scope: string.unquoted.dtk-symbols
 
     - match: 'hidden'
@@ -175,9 +170,12 @@ contexts:
         - include: pop_at_boundary
 
     # unknown key-only attributes
-    - match: '(\w+)'
+    - match: '\w+'
       scope: entity.other.attribute-name.dtk-symbols
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
         - include: pop_at_boundary
+
+    - match: '$'
+      pop: 2

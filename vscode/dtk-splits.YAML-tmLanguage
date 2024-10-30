@@ -1,0 +1,206 @@
+# [PackageDev] target_format: plist, ext: tmLanguage
+---
+name: decomp-toolkit splits.txt tmLanguage
+scopeName: source.dtk-splits
+fileTypes: [splits.txt]
+
+patterns:
+  - include: '#comments'
+
+  # the special Sections split at the top of the file
+  - begin: '^\s*(Sections)(:)'
+    beginCaptures:
+      '1': {name: keyword.other.section-def.dtk-splits}
+      '2': {name: punctuation.separator.dtk-splits}
+    name: meta.section-def.dtk-splits
+    end: '(?=^\s*[^\s:]+:)'
+    patterns:
+      - include: '#comments'
+      - include: '#section-defs'
+
+  - begin: '^\s*([^\s:]+)(:)'
+    beginCaptures:
+      '0': {name: meta.split.file.dtk-splits}
+      '1': {name: entity.other.split.file-name.dtk-splits entity.name.namespace.dtk-splits}
+      '2': {name: punctuation.separator.dtk-splits}
+    name: meta.split.dtk-splits
+    end: '(?=^\s*[^\s:]+:)'
+    patterns:
+     - include: '#comments'
+     - include: '#splits'
+
+repository:
+  # NOTE: just for comments in syntax_tests; the actual format does not support
+  # comments
+  comments:
+    patterns:
+    - begin: '#'
+      beginCaptures:
+        '1': {name: punctuation.definition.comment.dtk-splits}
+      name: comment.line.number-sign.dtk-splits
+      end: '$'
+
+  # mostly taken from the C syntax
+  numbers:
+    patterns:
+      # hexadecimal integer
+      - match: '\b(0[Xx])([[:xdigit:]]*)'
+        name: meta.number.integer.hexadecimal.dtk-splits
+        captures:
+          '1': {name: constant.numeric.base.dtk-splits}
+          '2': {name: constant.numeric.value.dtk-splits}
+
+      # decimal integer
+      - match: '\d+'
+        name: meta.number.integer.decimal.dtk-splits constant.numeric.value.dtk-splits
+
+  # section definition contexts (the first one at the top of the file)
+  section-defs:
+    patterns:
+      - begin: '(?<=\s)(\.init|extabindex|extab|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?))(?=\s)'
+        beginCaptures:
+          '0': {name: entity.name.section.dtk-splits constant.language.section.dtk-splits}
+        end: '$'
+        patterns:
+          - include: '#section-def-attrs'
+
+      # any other unknown section names
+      - begin: '\S+'
+        beginCaptures:
+          '0': {name: entity.name.section.dtk-splits}
+        end: '$'
+        patterns:
+          - include: '#section-def-attrs'
+
+  section-def-attrs:
+    patterns:
+      - begin: '(type)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.type.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.section-def.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - match: '\w+'
+            name: string.unquoted.dtk-splits
+
+      - begin: '(align)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.align.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.section-def.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - include: '#numbers'
+
+      # unknown key-value attributes
+      - begin: '(\w+)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.section-def.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - match: '\w+'
+            name: string.unquoted.dtk-splits
+
+      # unknown key-only attributes
+      - match: '\w+'
+        name: meta.section-def.attribute.dtk-splits entity.other.attribute-name.dtk-splits
+
+  # split contexts
+  splits:
+    patterns:
+      # these are specifically the attributes of the file being split, not the
+      # attributes of the splits themselves
+      - begin: '(order)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.order.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.split.file.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - include: '#numbers'
+
+      # unknown key-value attributes
+      - begin: '(\w+)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.split.file.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - match: '\S+'
+            name: string.unquoted.dtk-splits
+
+      # unknown key-only attributes
+      - match: '\w+'
+        name: meta.split.file.attribute.dtk-splits entity.other.attribute-name.dtk-splits
+
+      - begin: '$'
+        end: '(?=^\s*[^\s:]+:)'
+        patterns:
+          - include: '#comments'
+          - include: '#split-sections'
+
+  split-sections:
+    patterns:
+      - begin: '(?<=\s)(\.init|extabindex|extab|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?))(?=\s)'
+        beginCaptures:
+          '0': {name: entity.name.section.dtk-splits constant.language.section.dtk-splits}
+        end: '$'
+        patterns:
+         - include: '#split-attrs'
+
+      # any other unknown section names
+      - begin: '\S+'
+        beginCaptures:
+          '0': {name: entity.name.section.dtk-splits}
+        end: '$'
+        patterns:
+         - include: '#split-attrs'
+
+  split-attrs:
+    patterns:
+      - begin: '(start|end)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.location.dtk-splits keyword.other.location.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.split.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - include: '#numbers'
+
+      - begin: '(rename)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.rename.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.split.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - match: '\S+'
+            name: string.unquoted.dtk-splits
+
+      - begin: '(align)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.align.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.split.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - include: '#numbers'
+
+      # unknown key-value attributes
+      - begin: '(\w+)(:)'
+        beginCaptures:
+          '1': {name: entity.other.attribute-name.dtk-splits}
+          '2': {name: punctuation.separator.dtk-splits}
+        name: meta.split.attribute.dtk-splits
+        end: '(?=\s)'
+        patterns:
+          - match: '\S+'
+            name: string.unquoted.dtk-splits
+
+      # unknown key-only attributes
+      - match: '\w+'
+        name: meta.split.attribute.dtk-splits entity.other.attribute-name.dtk-splits

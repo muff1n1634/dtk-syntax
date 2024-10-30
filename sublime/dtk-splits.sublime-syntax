@@ -8,9 +8,9 @@ file_extensions:
   - splits.txt
 
 variables:
-  split_file_name: '^\s*(?:[^\s:]+)'
+  split_file_name: '[^\s:]+'
   section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
-  section_identifier: '[^\s]+'
+  section_identifier: '\S+'
 
 contexts:
   # NOTE: just for comments in syntax_tests; the actual format does not support
@@ -39,7 +39,7 @@ contexts:
         1: entity.other.split.file-name.dtk-splits
            entity.name.namespace.dtk-splits # hack to get it into the symbol table
         2: punctuation.separator.dtk-splits
-      push: splits
+      push: split-file-attrs
 
   ###################
   # helper contexts #
@@ -53,13 +53,13 @@ contexts:
       pop: 2
 
   pop_at_boundary:
-    - match: '(?=[\s\n])'
+    - match: '(?=\s)'
       pop: 1
 
   # mostly taken from the C syntax
   numbers:
     # hexadecimal integer
-    - match: '\b(0[Xx])(\h*)'
+    - match: '\b(0[Xx])([[:xdigit:]]*)'
       scope: meta.number.integer.hexadecimal.dtk-splits
       captures:
         1: constant.numeric.base.dtk-splits
@@ -79,23 +79,19 @@ contexts:
     - meta_scope: meta.section-def.dtk-splits
     - include: pop_at_new_split
 
-    - match: '({{section_names}})\s+'
-      captures:
-        1: entity.name.section.dtk-splits constant.language.section.dtk-splits
+    - match: '\s({{section_names}})\s'
+      scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: section-def-attrs
 
     # any other unknown section names
-    - match: '({{section_identifier}})\s+'
-      captures:
-        1: entity.name.section.dtk-splits
+    - match: '{{section_identifier}}'
+      scope: entity.name.section.dtk-splits
       push: section-def-attrs
 
   section-def-attrs:
     - clear_scopes: 1
     - meta_scope: meta.section-def.dtk-splits
-
     - include: pop_at_newline
-    - include: pop_at_new_split
 
     - match: '(type)(:)'
       captures:
@@ -118,7 +114,7 @@ contexts:
         - include: pop_at_boundary
         - include: numbers
 
-    # unknown attributes
+    # unknown key-value attributes
     - match: '(\w+)(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
@@ -127,16 +123,23 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.section-def.attribute.dtk-splits
         - include: pop_at_boundary
-        - match: '[^\s]+'
+        - match: '\S+'
           scope: string.unquoted.dtk-splits
 
+    # unknown key-only attributes
+    - match: '\w+'
+      scope: entity.other.attribute-name.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.section-def.attribute.dtk-splits
+        - include: pop_at_boundary
+
   # split contexts
-  splits:
+  split-file-attrs:
     - meta_scope: meta.split.file.dtk-splits
-    - include: pop_at_new_split
 
     # these are specifically the attributes of the file being split, not the
-    # splits themselves
+    # attributes of the splits themselves
     - match: '(order)(:)'
       captures:
         1: entity.other.attribute-name.order.dtk-splits
@@ -147,7 +150,7 @@ contexts:
         - include: pop_at_boundary
         - include: numbers
 
-    # unknown attributes
+    # unknown key-value attributes
     - match: '(\w+)(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
@@ -156,8 +159,16 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.split.file.attribute.dtk-splits
         - include: pop_at_boundary
-        - match: '[^\s]+'
+        - match: '\S+'
           scope: string.unquoted.dtk-splits
+
+    # unknown key-only attributes
+    - match: '\w+'
+      scope: entity.other.attribute-name.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.file.attribute.dtk-splits
+        - include: pop_at_boundary
 
     - match: '$'
       set: split-sections
@@ -166,20 +177,17 @@ contexts:
     - meta_scope: meta.split.dtk-splits
     - include: pop_at_new_split
 
-    - match: '({{section_names}})\s+'
-      captures:
-        1: entity.name.section.dtk-splits constant.language.section.dtk-splits
+    - match: '\s({{section_names}})\s'
+      scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: split-attrs
 
     # any other unknown section names
-    - match: '({{section_identifier}})\s+'
-      captures:
-        1: entity.name.section.dtk-splits
+    - match: '{{section_identifier}}'
+      scope: entity.name.section.dtk-splits
       push: split-attrs
 
   split-attrs:
     - include: pop_at_newline
-    - include: pop_at_new_split
 
     - match: '(start|end)(:)'
       captures:
@@ -199,10 +207,20 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.split.attribute.dtk-splits
         - include: pop_at_boundary
-        - match: '[^\s]+'
+        - match: '\S+'
           scope: string.unquoted.dtk-splits
 
-    # unknown attributes
+    - match: '(align)(:)'
+      captures:
+        1: entity.other.attribute-name.align.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.attribute.dtk-splits
+        - include: pop_at_boundary
+        - include: numbers
+
+    # unknown key-value attributes
     - match: '(\w+)(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
@@ -211,5 +229,13 @@ contexts:
         - clear_scopes: 1
         - meta_scope: meta.split.attribute.dtk-splits
         - include: pop_at_boundary
-        - match: '[^\s]+'
+        - match: '\S+'
           scope: string.unquoted.dtk-splits
+
+    # unknown key-only attributes
+    - match: '\w+'
+      scope: entity.other.attribute-name.dtk-splits
+      push:
+        - clear_scopes: 1
+        - meta_scope: meta.split.attribute.dtk-splits
+        - include: pop_at_boundary
