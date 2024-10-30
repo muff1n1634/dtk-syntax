@@ -1,0 +1,55 @@
+{
+  "name": "dtk-syntax",
+  "displayName": "dtk-syntax",
+  "description": "decomp-toolkit syntax definitions",
+  "version": "1.0.0",
+  "publisher": "muff1n1634",
+  "author":
+  {
+    "name": "muff1n1634"
+  },
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.94.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages":
+    [
+      {
+        "id": "dtk-splits",
+        "aliases": ["decomp-toolkit splits.txt"],
+        "extensions": ["splits.txt"]
+      },
+      {
+        "id": "dtk-symbols",
+        "aliases": ["decomp-toolkit symbols.txt"],
+        "extensions": ["symbols.txt"]
+      }
+    ],
+    "grammars":
+    [
+      {
+        "language": "dtk-splits",
+        "scopeName": "source.dtk-splits",
+        "path": "./dtk-splits.tmLanguage"
+      },
+      {
+        "language": "dtk-symbols",
+        "scopeName": "source.dtk-symbols",
+        "path": "./dtk-symbols.tmLanguage"
+      }
+    ]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/muff1n1634/dtk-syntax.git"
+  },
+  "files":
+  [
+    "dtk-splits.tmLanguage",
+    "dtk-symbols.tmLanguage"
+  ]
+}
