@@ -22,6 +22,14 @@ contexts:
         - match: '$'
           pop: true
 
+    # only recognized as a comment if the marker is the first non-whitespace
+    # token on the line
+    - match: '#|//'
+      push:
+        - meta_scope: invalid.illegal.not-full-line-comment.dtk-splits
+        - match: '$'
+          pop: true
+
   ################
   # main context #
   ################

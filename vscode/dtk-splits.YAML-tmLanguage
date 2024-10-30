@@ -32,11 +32,14 @@ patterns:
 repository:
   comments:
     patterns:
-    - begin: '^\s*(#|//)'
-      beginCaptures:
-        '1': {name: comment.line.number-sign.dtk-splits punctuation.definition.comment.dtk-splits}
-      contentName: comment.line.number-sign.dtk-splits
-      end: '$'
+      - begin: '^\s*(#|//)'
+        beginCaptures:
+          '1': {name: comment.line.number-sign.dtk-splits punctuation.definition.comment.dtk-splits}
+        contentName: comment.line.number-sign.dtk-splits
+        end: '$'
+      - begin: '#|//'
+        name: invalid.illegal.not-full-line-comment.dtk-splits
+        end: '$'
 
   # mostly taken from the C syntax
   numbers:

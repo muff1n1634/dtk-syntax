@@ -106,6 +106,14 @@
 					<key>end</key>
 					<string>$</string>
 				</dict>
+				<dict>
+					<key>begin</key>
+					<string>#|//</string>
+					<key>end</key>
+					<string>$</string>
+					<key>name</key>
+					<string>invalid.illegal.not-full-line-comment.dtk-splits</string>
+				</dict>
 			</array>
 		</dict>
 		<key>numbers</key>
