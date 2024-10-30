@@ -352,19 +352,19 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>#</string>
+					<string>^\s*(#|//)</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.comment.dtk-symbols</string>
+							<string>comment.line.number-sign.dtk-splits punctuation.definition.comment.dtk-splits</string>
 						</dict>
 					</dict>
+					<key>contentName</key>
+					<string>comment.line.number-sign.dtk-splits</string>
 					<key>end</key>
 					<string>$</string>
-					<key>name</key>
-					<string>comment.line.number-sign.dtk-symbols</string>
 				</dict>
 			</array>
 		</dict>

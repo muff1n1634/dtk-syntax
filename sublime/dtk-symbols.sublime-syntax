@@ -12,13 +12,12 @@ variables:
   section_identifier: '\S+'
 
 contexts:
-  # NOTE: just for comments in syntax_tests; the actual format does not support
-  # comments
   prototype:
-    - match: '#'
-      scope: punctuation.definition.comment.dtk-splits
+    - match: '^\s*(#|//)'
+      captures:
+        1: comment.line.number-sign.dtk-splits punctuation.definition.comment.dtk-splits
       push:
-        - meta_scope: comment.line.number-sign.dtk-splits
+        - meta_content_scope: comment.line.number-sign.dtk-splits
         - match: '$'
           pop: true
 

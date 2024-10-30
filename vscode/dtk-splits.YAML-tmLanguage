@@ -30,14 +30,12 @@ patterns:
      - include: '#splits'
 
 repository:
-  # NOTE: just for comments in syntax_tests; the actual format does not support
-  # comments
   comments:
     patterns:
-    - begin: '#'
+    - begin: '^\s*(#|//)'
       beginCaptures:
-        '1': {name: punctuation.definition.comment.dtk-splits}
-      name: comment.line.number-sign.dtk-splits
+        '1': {name: comment.line.number-sign.dtk-splits punctuation.definition.comment.dtk-splits}
+      contentName: comment.line.number-sign.dtk-splits
       end: '$'
 
   # mostly taken from the C syntax

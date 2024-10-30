@@ -18,14 +18,12 @@ patterns:
       - include: '#attributes'
 
 repository:
-  # NOTE: just for comments in syntax_tests; the actual format does not support
-  # comments
   comments:
     patterns:
-    - begin: '#'
+    - begin: '^\s*(#|//)'
       beginCaptures:
-        '1': {name: punctuation.definition.comment.dtk-symbols}
-      name: comment.line.number-sign.dtk-symbols
+        '1': {name: comment.line.number-sign.dtk-splits punctuation.definition.comment.dtk-splits}
+      contentName: comment.line.number-sign.dtk-splits
       end: '$'
 
   # mostly taken from the C syntax
