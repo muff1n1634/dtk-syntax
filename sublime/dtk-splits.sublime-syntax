@@ -11,6 +11,7 @@ variables:
   eabi_section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
   section_identifier: '\S+'
 
+  invalid_split_file_identifier: '[[:alpha:]]:\\\S+'
   split_file_identifier: '[^\s:]+'
 
   attr_identifier: '\w+'
@@ -32,6 +33,12 @@ contexts:
         1: keyword.other.section-def.dtk-splits
         2: punctuation.separator.dtk-splits
       push: section-defs
+
+    - match: '^\s*({{invalid_split_file_identifier}})(:)'
+      captures:
+        1: invalid.illegal.invalid-absolute-windows-path.dtk-splits
+        2: punctuation.separator.dtk-splits
+      push: split-file-attrs
 
     - match: '^\s*({{split_file_identifier}})(:)'
       captures:
