@@ -8,9 +8,10 @@ file_extensions:
   - splits.txt
 
 variables:
-  split_file_name: '[^\s:]+'
-  section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
+  eabi_section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
   section_identifier: '\S+'
+
+  split_file_identifier: '[^\s:]+'
 
   attr_identifier: '\w+'
   section_def_kv_attr_number_value: ''
@@ -46,7 +47,7 @@ contexts:
         2: punctuation.separator.dtk-splits
       push: section-defs
 
-    - match: '^\s*({{split_file_name}})(:)'
+    - match: '^\s*({{split_file_identifier}})(:)'
       captures:
         1: entity.other.split.file-name.dtk-splits
            entity.name.namespace.dtk-splits # hack to get it into the symbol table
@@ -61,7 +62,7 @@ contexts:
       pop: 1
 
   pop_at_new_split:
-    - match: '(?=^\s*{{split_file_name}}:)'
+    - match: '(?=^\s*{{split_file_identifier}}:)'
       pop: 2
 
   pop_at_boundary:
@@ -91,7 +92,7 @@ contexts:
     - meta_scope: meta.section-def.dtk-splits
     - include: pop_at_new_split
 
-    - match: '\s({{section_names}})\s'
+    - match: '\s({{eabi_section_names}})\s'
       scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: section-def-attrs
 
@@ -193,7 +194,7 @@ contexts:
     - meta_scope: meta.split.dtk-splits
     - include: pop_at_new_split
 
-    - match: '\s({{section_names}})\s'
+    - match: '\s({{eabi_section_names}})\s'
       scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: split-attrs
 

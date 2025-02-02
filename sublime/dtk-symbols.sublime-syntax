@@ -8,7 +8,7 @@ file_extensions:
   - symbols.txt
 
 variables:
-  section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
+  eabi_section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
   section_identifier: '\S+'
 
   attr_identifier: '\w+'
@@ -61,7 +61,7 @@ contexts:
   # sub-contexts #
   ################
   address:
-    - match: '({{section_names}})\s*(:)'
+    - match: '({{eabi_section_names}})\s*(:)'
       captures:
         1: entity.name.section.dtk-symbols constant.language.section.dtk-symbols
         2: punctuation.separator.dtk-symbols
