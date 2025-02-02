@@ -92,12 +92,12 @@ contexts:
     - meta_scope: meta.section-def.dtk-splits
     - include: pop_at_new_split
 
-    - match: '\s({{eabi_section_names}})\s'
+    - match: '(?<=^|\s)({{eabi_section_names}})(?=\s)'
       scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: section-def-attrs
 
     # any other unknown section names
-    - match: '{{section_identifier}}'
+    - match: '(?<=^|\s)({{section_identifier}})(?=\s)'
       scope: entity.name.section.dtk-splits
       push: section-def-attrs
 
@@ -194,12 +194,12 @@ contexts:
     - meta_scope: meta.split.dtk-splits
     - include: pop_at_new_split
 
-    - match: '\s({{eabi_section_names}})\s'
+    - match: '(?<=^|\s)({{eabi_section_names}})(?=\s)'
       scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
       push: split-attrs
 
     # any other unknown section names
-    - match: '{{section_identifier}}'
+    - match: '(?<=^|\s)({{section_identifier}})(?=\s)'
       scope: entity.name.section.dtk-splits
       push: split-attrs
 
