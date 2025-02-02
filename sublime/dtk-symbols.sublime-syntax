@@ -18,9 +18,9 @@ contexts:
   prototype:
     - match: '^\s*(#|//)'
       captures:
-        1: comment.line.number-sign.dtk-splits punctuation.definition.comment.dtk-splits
+        1: comment.line.dtk-splits punctuation.definition.comment.dtk-splits
       push:
-        - meta_content_scope: comment.line.number-sign.dtk-splits
+        - meta_content_scope: comment.line.dtk-splits
         - match: '$'
           pop: true
 
