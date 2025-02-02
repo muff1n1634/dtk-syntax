@@ -109,12 +109,12 @@ contexts:
     # special attr: type
     - match: '(type)(:)'
       captures:
-        1: entity.other.attribute-name.dtk-splits keyword.other.dtk-splits
+        1: entity.other.attribute-name.dtk-splits keyword.declaration.type.dtk-splits
         2: punctuation.separator.dtk-splits
       push:
         - clear_scopes: 1
         - meta_scope: meta.section-def.attribute.dtk-splits
-        - meta_content_scope: string.unquoted.dtk-splits
+        - meta_content_scope: storage.type.dtk-splits
         - include: pop_at_boundary
 
     # special attr: align

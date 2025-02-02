@@ -95,12 +95,12 @@ contexts:
     # special attr: type
     - match: '(type)(:)'
       captures:
-        1: entity.other.attribute-name.dtk-symbols keyword.other.dtk-symbols
+        1: entity.other.attribute-name.dtk-symbols keyword.declaration.type.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - meta_content_scope: string.unquoted.dtk-symbols
+        - meta_content_scope: storage.type.dtk-symbols
         - include: pop_at_boundary
 
     # special attr: size
