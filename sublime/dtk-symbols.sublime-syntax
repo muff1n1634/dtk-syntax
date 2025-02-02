@@ -16,14 +16,7 @@ variables:
 
 contexts:
   prototype:
-    - match: '^\s*(#|//)'
-      captures:
-        1: comment.line.dtk-splits
-           punctuation.definition.comment.dtk-splits
-      push:
-        - meta_content_scope: comment.line.dtk-splits
-        - match: '$'
-          pop: true
+    - include: comments
 
   ################
   # main context #
@@ -40,9 +33,21 @@ contexts:
   ###################
   # helper contexts #
   ###################
+  pop_at_newline:
+    - match: '$'
+      pop: 1
+
   pop_at_boundary:
     - match: '(?=\s)'
       pop: 1
+
+  comments:
+    - match: '^\s*(#|//)'
+      captures:
+        1: punctuation.definition.comment.dtk-splits
+      push:
+        - meta_scope: comment.line.dtk-splits
+        - include: pop_at_newline
 
   # mostly taken from the C syntax
   numbers:
