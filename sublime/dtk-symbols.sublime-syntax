@@ -11,6 +11,9 @@ variables:
   section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
   section_identifier: '\S+'
 
+  attr_identifier: '\w+'
+  symbol_kv_attr_number_value: 'align'
+
 contexts:
   prototype:
     - match: '^\s*(#|//)'
@@ -89,92 +92,53 @@ contexts:
         - include: attributes
 
   attributes:
+    # special attr: type
     - match: '(type)(:)'
       captures:
-        1: entity.other.attribute-name.type.dtk-symbols keyword.other.type.dtk-symbols
+        1: entity.other.attribute-name.dtk-symbols keyword.other.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
+        - meta_content_scope: string.unquoted.dtk-symbols
         - include: pop_at_boundary
-        - match: '\w+'
-          scope: string.unquoted.dtk-symbols
 
+    # special attr: size
     - match: '(size)(:)'
       captures:
-        1: entity.other.attribute-name.size.dtk-symbols
+        1: entity.other.attribute-name.dtk-symbols keyword.other.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
         - include: numbers
-
-    - match: '(scope)(:)'
-      captures:
-        1: entity.other.attribute-name.scope.dtk-symbols
-        2: punctuation.separator.key-value.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
         - include: pop_at_boundary
-        - match: '\w+'
-          scope: string.unquoted.dtk-symbols
 
-    - match: '(align)(:)'
-      captures:
-        1: entity.other.attribute-name.align.dtk-symbols
-        2: punctuation.separator.key-value.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
-        - include: numbers
-
-    - match: '(data)(:)'
-      captures:
-        1: entity.other.attribute-name.data.dtk-symbols
-        2: punctuation.separator.key-value.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
-        - match: '\w+'
-          scope: string.unquoted.dtk-symbols
-
-    # unknown key-value attributes
-    - match: '(\w+)(:)'
+    # number kv-attrs
+    - match: '({{symbol_kv_attr_number_value}})(:)'
       captures:
         1: entity.other.attribute-name.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
+        - include: numbers
         - include: pop_at_boundary
-        - match: '\S+'
-          scope: string.unquoted.dtk-symbols
 
-    - match: 'hidden'
-      scope: entity.other.attribute-name.hidden.dtk-symbols
+    # other kv-attrs
+    - match: '({{attr_identifier}})(:)'
+      captures:
+        1: entity.other.attribute-name.dtk-splits
+        2: punctuation.separator.dtk-splits
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
+        - meta_content_scope: string.unquoted.dtk-splits
         - include: pop_at_boundary
 
-    - match: 'noreloc'
-      scope: entity.other.attribute-name.noreloc.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
-
-    # unknown key-only attributes
-    - match: '\w+'
-      scope: entity.other.attribute-name.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
+    # other k-attrs
+    - match: '({{attr_identifier}})'
+      scope: meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.dtk-splits
 
     - match: '$'
       pop: 2
