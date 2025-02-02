@@ -20,11 +20,11 @@ patterns:
 repository:
   comments:
     patterns:
-    - begin: '^\s*(#|//)'
-      beginCaptures:
-        '1': {name: comment.line.number-sign.dtk-splits punctuation.definition.comment.dtk-splits}
-      contentName: comment.line.number-sign.dtk-splits
-      end: '$'
+      - begin: '^\s*(#|//)'
+        beginCaptures:
+          '1': {name: punctuation.definition.comment.dtk-splits}
+        name: comment.line.dtk-splits
+        end: '$'
 
   # mostly taken from the C syntax
   numbers:
@@ -40,9 +40,6 @@ repository:
       - match: '\d+'
         name: meta.number.integer.decimal.dtk-symbols constant.numeric.value.dtk-symbols
 
-  ################
-  # sub-contexts #
-  ################
   address:
     patterns:
       - begin: '(\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?))\s*(:)'
@@ -75,55 +72,36 @@ repository:
         name: meta.symbol.attribute-list.dtk-symbols
         end: '$'
         patterns:
+          # special attr: type
           - begin: '(type)(:)'
             beginCaptures:
-              '1': {name: entity.other.attribute-name.type.dtk-symbols keyword.other.type.dtk-symbols}
+              '1': {name: entity.other.attribute-name.dtk-symbols keyword.declaration.type.dtk-symbols}
               '2': {name: punctuation.separator.key-value.dtk-symbols}
             name: meta.symbol.attribute-list.attribute.dtk-symbols
+            contentName: storage.type.dtk-symbols
             end: '(?=\s)'
-            patterns:
-              - match: '\w+'
-                name: string.unquoted.dtk-symbols
 
+          # special attr: size
           - begin: '(size)(:)'
             beginCaptures:
-              '1': {name: entity.other.attribute-name.size.dtk-symbols}
+              '1': {name: entity.other.attribute-name.dtk-symbols keyword.other.dtk-symbols}
               '2': {name: punctuation.separator.key-value.dtk-symbols}
             name: meta.symbol.attribute-list.attribute.dtk-symbols
             end: '(?=\s)'
             patterns:
               - include: '#numbers'
 
-          - begin: '(scope)(:)'
-            beginCaptures:
-              '1': {name: entity.other.attribute-name.scope.dtk-symbols}
-              '2': {name: punctuation.separator.key-value.dtk-symbols}
-            name: meta.symbol.attribute-list.attribute.dtk-symbols
-            end: '(?=\s)'
-            patterns:
-              - match: '\w+'
-                name: string.unquoted.dtk-symbols
-
+          # number kv-attrs
           - begin: '(align)(:)'
             beginCaptures:
-              '1': {name: entity.other.attribute-name.align.dtk-symbols}
+              '1': {name: entity.other.attribute-name.dtk-symbols}
               '2': {name: punctuation.separator.key-value.dtk-symbols}
             name: meta.symbol.attribute-list.attribute.dtk-symbols
             end: '(?=\s)'
             patterns:
               - include: '#numbers'
 
-          - begin: '(data)(:)'
-            beginCaptures:
-              '1': {name: entity.other.attribute-name.data.dtk-symbols}
-              '2': {name: punctuation.separator.key-value.dtk-symbols}
-            name: meta.symbol.attribute-list.attribute.dtk-symbols
-            end: '(?=\s)'
-            patterns:
-              - match: '\w+'
-                name: string.unquoted.dtk-symbols
-
-          # unknown key-value attributes
+          # other kv-attrs
           - begin: '(\w+)(:)'
             beginCaptures:
               '1': {name: entity.other.attribute-name.dtk-symbols}
@@ -131,15 +109,9 @@ repository:
             name: meta.symbol.attribute-list.attribute.dtk-symbols
             end: '(?=\s)'
             patterns:
-              - match: '\S+'
+              - match: '\w+'
                 name: string.unquoted.dtk-symbols
 
-          - match: 'hidden'
-            name: meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.hidden.dtk-symbols
-
-          - match: 'noreloc'
-            name: meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.noreloc.dtk-symbols
-
-          # unknown key-only attributes
+          # other k-attrs
           - match: '\w+'
             name: meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.dtk-symbols
