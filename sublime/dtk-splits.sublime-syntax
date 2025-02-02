@@ -22,7 +22,8 @@ contexts:
   prototype:
     - match: '^\s*(#|//)'
       captures:
-        1: comment.line.dtk-splits punctuation.definition.comment.dtk-splits
+        1: comment.line.dtk-splits
+           punctuation.definition.comment.dtk-splits
       push:
         - meta_content_scope: comment.line.dtk-splits
         - match: '$'
@@ -93,7 +94,8 @@ contexts:
     - include: pop_at_new_split
 
     - match: '(?<=^|\s)({{eabi_section_names}})(?=\s)'
-      scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
+      scope: entity.name.section.dtk-splits
+             constant.language.section.dtk-splits
       push: section-def-attrs
 
     # any other unknown section names
@@ -109,7 +111,8 @@ contexts:
     # special attr: type
     - match: '(type)(:)'
       captures:
-        1: entity.other.attribute-name.dtk-splits keyword.declaration.type.dtk-splits
+        1: entity.other.attribute-name.dtk-splits
+           keyword.declaration.type.dtk-splits
         2: punctuation.separator.dtk-splits
       push:
         - clear_scopes: 1
@@ -120,7 +123,8 @@ contexts:
     # special attr: align
     - match: '(align)(:)'
       captures:
-        1: entity.other.attribute-name.dtk-splits keyword.other.dtk-splits
+        1: entity.other.attribute-name.dtk-splits
+           keyword.other.dtk-splits
         2: punctuation.separator.dtk-splits
       push:
         - clear_scopes: 1
@@ -153,7 +157,8 @@ contexts:
 
     # other k-attrs
     - match: '({{attr_identifier}})'
-      scope: meta.section-def.attribute.dtk-splits entity.other.attribute-name.dtk-splits
+      scope: meta.section-def.attribute.dtk-splits
+             entity.other.attribute-name.dtk-splits
 
   # split contexts
   split-file-attrs:
@@ -185,7 +190,8 @@ contexts:
 
     # other k-attrs
     - match: '({{attr_identifier}})'
-      scope: meta.split.file.attribute.dtk-splits entity.other.attribute-name.dtk-splits
+      scope: meta.split.file.attribute.dtk-splits
+             entity.other.attribute-name.dtk-splits
 
     - match: '$'
       set: split-sections
@@ -195,7 +201,8 @@ contexts:
     - include: pop_at_new_split
 
     - match: '(?<=^|\s)({{eabi_section_names}})(?=\s)'
-      scope: entity.name.section.dtk-splits constant.language.section.dtk-splits
+      scope: entity.name.section.dtk-splits
+             constant.language.section.dtk-splits
       push: split-attrs
 
     # any other unknown section names
@@ -210,7 +217,8 @@ contexts:
     # special attrs: start/end
     - match: '(start|end)(:)'
       captures:
-        1: entity.other.attribute-name.dtk-splits keyword.other.dtk-splits
+        1: entity.other.attribute-name.dtk-splits
+           keyword.other.dtk-splits
         2: punctuation.separator.dtk-splits
       push:
         - clear_scopes: 1
@@ -242,4 +250,5 @@ contexts:
 
     # other k-attrs
     - match: '({{attr_identifier}})'
-      scope: meta.split.section.attribute.dtk-splits entity.other.attribute-name.dtk-splits
+      scope: meta.split.section.attribute.dtk-splits
+             entity.other.attribute-name.dtk-splits

@@ -18,7 +18,8 @@ contexts:
   prototype:
     - match: '^\s*(#|//)'
       captures:
-        1: comment.line.dtk-splits punctuation.definition.comment.dtk-splits
+        1: comment.line.dtk-splits
+           punctuation.definition.comment.dtk-splits
       push:
         - meta_content_scope: comment.line.dtk-splits
         - match: '$'
@@ -63,7 +64,8 @@ contexts:
   address:
     - match: '({{eabi_section_names}})\s*(:)'
       captures:
-        1: entity.name.section.dtk-symbols constant.language.section.dtk-symbols
+        1: entity.name.section.dtk-symbols
+           constant.language.section.dtk-symbols
         2: punctuation.separator.dtk-symbols
       push:
         - meta_scope: meta.symbol.address.dtk-symbols
@@ -85,7 +87,8 @@ contexts:
 
   attribute-list-marker:
     - match: '//'
-      scope: punctuation.definition.comment.dtk-symbols comment.line.double-slash.dtk-symbols
+      scope: punctuation.definition.comment.dtk-symbols
+             comment.line.double-slash.dtk-symbols
       set:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.dtk-symbols
@@ -95,7 +98,8 @@ contexts:
     # special attr: type
     - match: '(type)(:)'
       captures:
-        1: entity.other.attribute-name.dtk-symbols keyword.declaration.type.dtk-symbols
+        1: entity.other.attribute-name.dtk-symbols
+           keyword.declaration.type.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
@@ -106,7 +110,8 @@ contexts:
     # special attr: size
     - match: '(size)(:)'
       captures:
-        1: entity.other.attribute-name.dtk-symbols keyword.other.dtk-symbols
+        1: entity.other.attribute-name.dtk-symbols
+           keyword.other.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
@@ -138,7 +143,8 @@ contexts:
 
     # other k-attrs
     - match: '({{attr_identifier}})'
-      scope: meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.dtk-splits
+      scope: meta.symbol.attribute-list.attribute.dtk-symbols
+             entity.other.attribute-name.dtk-splits
 
     - match: '$'
       pop: 2
