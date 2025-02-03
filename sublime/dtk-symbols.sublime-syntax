@@ -12,7 +12,7 @@ variables:
   section_identifier: '\S+'
 
   attr_identifier: '\w+'
-  symbol_kv_attr_number_value: 'align'
+  symbol_kv_attr_number_value: 'size|align'
 
 contexts:
   prototype:
@@ -104,24 +104,12 @@ contexts:
     - match: '(type)(:)'
       captures:
         1: entity.other.attribute-name.dtk-symbols
-           keyword.declaration.type.dtk-symbols
-        2: punctuation.separator.key-value.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - meta_content_scope: storage.type.dtk-symbols
-        - include: pop_at_boundary
-
-    # special attr: size
-    - match: '(size)(:)'
-      captures:
-        1: entity.other.attribute-name.dtk-symbols
            keyword.other.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: numbers
+        - meta_content_scope: string.unquoted.dtk-symbols
         - include: pop_at_boundary
 
     # number kv-attrs

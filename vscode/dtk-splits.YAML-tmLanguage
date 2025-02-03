@@ -90,35 +90,15 @@ repository:
 
   section-def-attrs:
     patterns:
-      # special attr: type
-      - begin: '(type)(:)'
-        beginCaptures:
-          '1': {name: entity.other.attribute-name.dtk-splits keyword.declaration.type.dtk-splits}
-          '2': {name: punctuation.separator.dtk-splits}
-        name: meta.section-def.attribute.dtk-splits
-        contentName: storage.type.dtk-splits
-        end: '(?=\s)'
-
-      # special attr: align
+      # number kv-attrs
       - begin: '(align)(:)'
         beginCaptures:
-          '1': {name: entity.other.attribute-name.dtk-splits keyword.other.dtk-splits}
+          '1': {name: entity.other.attribute-name.dtk-splits}
           '2': {name: punctuation.separator.dtk-splits}
         name: meta.section-def.attribute.dtk-splits
         end: '(?=\s)'
         patterns:
           - include: '#numbers'
-
-      # currently none; comment out to avoid rogue scoping
-#     # number kv-attrs
-#     - begin: '()(:)'
-#       beginCaptures:
-#         '1': {name: entity.other.attribute-name.dtk-splits}
-#         '2': {name: punctuation.separator.dtk-splits}
-#       name: meta.section-def.attribute.dtk-splits
-#       end: '(?=\s)'
-#       patterns:
-#         - include: '#numbers'
 
       # other kv-attrs
       - begin: '(\w+)(:)'
@@ -200,7 +180,7 @@ repository:
           - include: '#numbers'
 
       # number kv-attrs
-      - begin: '(order)(:)'
+      - begin: '(align)(:)'
         beginCaptures:
           '1': {name: entity.other.attribute-name.dtk-splits}
           '2': {name: punctuation.separator.dtk-splits}

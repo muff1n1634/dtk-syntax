@@ -75,24 +75,14 @@ repository:
           # special attr: type
           - begin: '(type)(:)'
             beginCaptures:
-              '1': {name: entity.other.attribute-name.dtk-symbols keyword.declaration.type.dtk-symbols}
-              '2': {name: punctuation.separator.key-value.dtk-symbols}
-            name: meta.symbol.attribute-list.attribute.dtk-symbols
-            contentName: storage.type.dtk-symbols
-            end: '(?=\s)'
-
-          # special attr: size
-          - begin: '(size)(:)'
-            beginCaptures:
               '1': {name: entity.other.attribute-name.dtk-symbols keyword.other.dtk-symbols}
               '2': {name: punctuation.separator.key-value.dtk-symbols}
             name: meta.symbol.attribute-list.attribute.dtk-symbols
+            contentName: string.unquoted.dtk-symbols
             end: '(?=\s)'
-            patterns:
-              - include: '#numbers'
 
           # number kv-attrs
-          - begin: '(align)(:)'
+          - begin: '(size|align)(:)'
             beginCaptures:
               '1': {name: entity.other.attribute-name.dtk-symbols}
               '2': {name: punctuation.separator.key-value.dtk-symbols}

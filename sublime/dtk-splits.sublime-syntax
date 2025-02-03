@@ -15,7 +15,7 @@ variables:
   split_file_identifier: '[^\s:]+'
 
   attr_identifier: '\w+'
-  section_def_kv_attr_number_value: ''
+  section_def_kv_attr_number_value: 'align'
   split_file_kv_attr_number_value: 'order'
   split_kv_attr_number_value: 'align'
 
@@ -115,41 +115,16 @@ contexts:
     - meta_scope: meta.section-def.dtk-splits
     - include: pop_at_newline
 
-    # special attr: type
-    - match: '(type)(:)'
+    # number kv-attrs
+    - match: '({{section_def_kv_attr_number_value}})(:)'
       captures:
         1: entity.other.attribute-name.dtk-splits
-           keyword.declaration.type.dtk-splits
-        2: punctuation.separator.dtk-splits
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.section-def.attribute.dtk-splits
-        - meta_content_scope: storage.type.dtk-splits
-        - include: pop_at_boundary
-
-    # special attr: align
-    - match: '(align)(:)'
-      captures:
-        1: entity.other.attribute-name.dtk-splits
-           keyword.other.dtk-splits
         2: punctuation.separator.dtk-splits
       push:
         - clear_scopes: 1
         - meta_scope: meta.section-def.attribute.dtk-splits
         - include: numbers
         - include: pop_at_boundary
-
-    # currently none; comment out to avoid rogue scoping
-#   # number kv-attrs
-#   - match: '({{section_def_kv_attr_number_value}})(:)'
-#     captures:
-#       1: entity.other.attribute-name.dtk-splits
-#       2: punctuation.separator.dtk-splits
-#     push:
-#       - clear_scopes: 1
-#       - meta_scope: meta.section-def.attribute.dtk-splits
-#       - include: numbers
-#       - include: pop_at_boundary
 
     # other kv-attrs
     - match: '({{attr_identifier}})(:)'

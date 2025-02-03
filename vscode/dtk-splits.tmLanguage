@@ -190,36 +190,13 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>(type)(:)</string>
-					<key>beginCaptures</key>
-					<dict>
-						<key>1</key>
-						<dict>
-							<key>name</key>
-							<string>entity.other.attribute-name.dtk-splits keyword.declaration.type.dtk-splits</string>
-						</dict>
-						<key>2</key>
-						<dict>
-							<key>name</key>
-							<string>punctuation.separator.dtk-splits</string>
-						</dict>
-					</dict>
-					<key>contentName</key>
-					<string>storage.type.dtk-splits</string>
-					<key>end</key>
-					<string>(?=\s)</string>
-					<key>name</key>
-					<string>meta.section-def.attribute.dtk-splits</string>
-				</dict>
-				<dict>
-					<key>begin</key>
 					<string>(align)(:)</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>entity.other.attribute-name.dtk-splits keyword.other.dtk-splits</string>
+							<string>entity.other.attribute-name.dtk-splits</string>
 						</dict>
 						<key>2</key>
 						<dict>
@@ -352,7 +329,7 @@
 				</dict>
 				<dict>
 					<key>begin</key>
-					<string>(order)(:)</string>
+					<string>(align)(:)</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>

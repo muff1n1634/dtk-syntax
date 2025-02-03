@@ -156,29 +156,6 @@
 								<key>1</key>
 								<dict>
 									<key>name</key>
-									<string>entity.other.attribute-name.dtk-symbols keyword.declaration.type.dtk-symbols</string>
-								</dict>
-								<key>2</key>
-								<dict>
-									<key>name</key>
-									<string>punctuation.separator.key-value.dtk-symbols</string>
-								</dict>
-							</dict>
-							<key>contentName</key>
-							<string>storage.type.dtk-symbols</string>
-							<key>end</key>
-							<string>(?=\s)</string>
-							<key>name</key>
-							<string>meta.symbol.attribute-list.attribute.dtk-symbols</string>
-						</dict>
-						<dict>
-							<key>begin</key>
-							<string>(size)(:)</string>
-							<key>beginCaptures</key>
-							<dict>
-								<key>1</key>
-								<dict>
-									<key>name</key>
 									<string>entity.other.attribute-name.dtk-symbols keyword.other.dtk-symbols</string>
 								</dict>
 								<key>2</key>
@@ -187,21 +164,16 @@
 									<string>punctuation.separator.key-value.dtk-symbols</string>
 								</dict>
 							</dict>
+							<key>contentName</key>
+							<string>string.unquoted.dtk-symbols</string>
 							<key>end</key>
 							<string>(?=\s)</string>
 							<key>name</key>
 							<string>meta.symbol.attribute-list.attribute.dtk-symbols</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>include</key>
-									<string>#numbers</string>
-								</dict>
-							</array>
 						</dict>
 						<dict>
 							<key>begin</key>
-							<string>(align)(:)</string>
+							<string>(size|align)(:)</string>
 							<key>beginCaptures</key>
 							<dict>
 								<key>1</key>
