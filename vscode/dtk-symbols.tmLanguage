@@ -156,7 +156,7 @@
 								<key>1</key>
 								<dict>
 									<key>name</key>
-									<string>entity.other.attribute-name.type.dtk-symbols keyword.other.type.dtk-symbols</string>
+									<string>entity.other.attribute-name.dtk-symbols keyword.other.dtk-symbols</string>
 								</dict>
 								<key>2</key>
 								<dict>
@@ -164,29 +164,22 @@
 									<string>punctuation.separator.key-value.dtk-symbols</string>
 								</dict>
 							</dict>
+							<key>contentName</key>
+							<string>string.unquoted.dtk-symbols</string>
 							<key>end</key>
 							<string>(?=\s)</string>
 							<key>name</key>
 							<string>meta.symbol.attribute-list.attribute.dtk-symbols</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>match</key>
-									<string>\w+</string>
-									<key>name</key>
-									<string>string.unquoted.dtk-symbols</string>
-								</dict>
-							</array>
 						</dict>
 						<dict>
 							<key>begin</key>
-							<string>(size)(:)</string>
+							<string>(size|align)(:)</string>
 							<key>beginCaptures</key>
 							<dict>
 								<key>1</key>
 								<dict>
 									<key>name</key>
-									<string>entity.other.attribute-name.size.dtk-symbols</string>
+									<string>entity.other.attribute-name.dtk-symbols</string>
 								</dict>
 								<key>2</key>
 								<dict>
@@ -203,94 +196,6 @@
 								<dict>
 									<key>include</key>
 									<string>#numbers</string>
-								</dict>
-							</array>
-						</dict>
-						<dict>
-							<key>begin</key>
-							<string>(scope)(:)</string>
-							<key>beginCaptures</key>
-							<dict>
-								<key>1</key>
-								<dict>
-									<key>name</key>
-									<string>entity.other.attribute-name.scope.dtk-symbols</string>
-								</dict>
-								<key>2</key>
-								<dict>
-									<key>name</key>
-									<string>punctuation.separator.key-value.dtk-symbols</string>
-								</dict>
-							</dict>
-							<key>end</key>
-							<string>(?=\s)</string>
-							<key>name</key>
-							<string>meta.symbol.attribute-list.attribute.dtk-symbols</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>match</key>
-									<string>\w+</string>
-									<key>name</key>
-									<string>string.unquoted.dtk-symbols</string>
-								</dict>
-							</array>
-						</dict>
-						<dict>
-							<key>begin</key>
-							<string>(align)(:)</string>
-							<key>beginCaptures</key>
-							<dict>
-								<key>1</key>
-								<dict>
-									<key>name</key>
-									<string>entity.other.attribute-name.align.dtk-symbols</string>
-								</dict>
-								<key>2</key>
-								<dict>
-									<key>name</key>
-									<string>punctuation.separator.key-value.dtk-symbols</string>
-								</dict>
-							</dict>
-							<key>end</key>
-							<string>(?=\s)</string>
-							<key>name</key>
-							<string>meta.symbol.attribute-list.attribute.dtk-symbols</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>include</key>
-									<string>#numbers</string>
-								</dict>
-							</array>
-						</dict>
-						<dict>
-							<key>begin</key>
-							<string>(data)(:)</string>
-							<key>beginCaptures</key>
-							<dict>
-								<key>1</key>
-								<dict>
-									<key>name</key>
-									<string>entity.other.attribute-name.data.dtk-symbols</string>
-								</dict>
-								<key>2</key>
-								<dict>
-									<key>name</key>
-									<string>punctuation.separator.key-value.dtk-symbols</string>
-								</dict>
-							</dict>
-							<key>end</key>
-							<string>(?=\s)</string>
-							<key>name</key>
-							<string>meta.symbol.attribute-list.attribute.dtk-symbols</string>
-							<key>patterns</key>
-							<array>
-								<dict>
-									<key>match</key>
-									<string>\w+</string>
-									<key>name</key>
-									<string>string.unquoted.dtk-symbols</string>
 								</dict>
 							</array>
 						</dict>
@@ -318,23 +223,11 @@
 							<array>
 								<dict>
 									<key>match</key>
-									<string>\S+</string>
+									<string>\w+</string>
 									<key>name</key>
 									<string>string.unquoted.dtk-symbols</string>
 								</dict>
 							</array>
-						</dict>
-						<dict>
-							<key>match</key>
-							<string>hidden</string>
-							<key>name</key>
-							<string>meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.hidden.dtk-symbols</string>
-						</dict>
-						<dict>
-							<key>match</key>
-							<string>noreloc</string>
-							<key>name</key>
-							<string>meta.symbol.attribute-list.attribute.dtk-symbols entity.other.attribute-name.noreloc.dtk-symbols</string>
 						</dict>
 						<dict>
 							<key>match</key>
@@ -352,19 +245,19 @@
 			<array>
 				<dict>
 					<key>begin</key>
-					<string>#</string>
+					<string>^\s*(#|//)</string>
 					<key>beginCaptures</key>
 					<dict>
 						<key>1</key>
 						<dict>
 							<key>name</key>
-							<string>punctuation.definition.comment.dtk-symbols</string>
+							<string>punctuation.definition.comment.dtk-splits</string>
 						</dict>
 					</dict>
 					<key>end</key>
 					<string>$</string>
 					<key>name</key>
-					<string>comment.line.number-sign.dtk-symbols</string>
+					<string>comment.line.dtk-splits</string>
 				</dict>
 			</array>
 		</dict>
