@@ -1,5 +1,5 @@
 # make sure to change the version in vscode/package.json
-VERSION = 1.0.0
+VERSION = 1.1.0
 
 .PHONY: sublime vscode
 

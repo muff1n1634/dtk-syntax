@@ -8,19 +8,15 @@ file_extensions:
   - symbols.txt
 
 variables:
-  section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
+  eabi_section_names: '\.init|extab(?:index)?|\.(?:text|[cd]tors|(?:ro)?data|bss|s?(?:data|bss)2?)'
   section_identifier: '\S+'
 
+  attr_identifier: '\w+'
+  symbol_kv_attr_number_value: 'size|align'
+
 contexts:
-  # NOTE: just for comments in syntax_tests; the actual format does not support
-  # comments
   prototype:
-    - match: '#'
-      scope: punctuation.definition.comment.dtk-splits
-      push:
-        - meta_scope: comment.line.number-sign.dtk-splits
-        - match: '$'
-          pop: true
+    - include: comments
 
   ################
   # main context #
@@ -37,9 +33,21 @@ contexts:
   ###################
   # helper contexts #
   ###################
+  pop_at_newline:
+    - match: '$'
+      pop: 1
+
   pop_at_boundary:
     - match: '(?=\s)'
       pop: 1
+
+  comments:
+    - match: '^\s*(#|//)'
+      captures:
+        1: punctuation.definition.comment.dtk-splits
+      push:
+        - meta_scope: comment.line.dtk-splits
+        - include: pop_at_newline
 
   # mostly taken from the C syntax
   numbers:
@@ -59,9 +67,10 @@ contexts:
   # sub-contexts #
   ################
   address:
-    - match: '({{section_names}})\s*(:)'
+    - match: '({{eabi_section_names}})\s*(:)'
       captures:
-        1: entity.name.section.dtk-symbols constant.language.section.dtk-symbols
+        1: entity.name.section.dtk-symbols
+           constant.language.section.dtk-symbols
         2: punctuation.separator.dtk-symbols
       push:
         - meta_scope: meta.symbol.address.dtk-symbols
@@ -83,99 +92,52 @@ contexts:
 
   attribute-list-marker:
     - match: '//'
-      scope: punctuation.definition.comment.dtk-symbols comment.line.double-slash.dtk-symbols
+      scope: punctuation.definition.comment.dtk-symbols
+             comment.line.double-slash.dtk-symbols
       set:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.dtk-symbols
         - include: attributes
 
   attributes:
+    # special attr: type
     - match: '(type)(:)'
       captures:
-        1: entity.other.attribute-name.type.dtk-symbols keyword.other.type.dtk-symbols
+        1: entity.other.attribute-name.dtk-symbols
+           keyword.other.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
+        - meta_content_scope: string.unquoted.dtk-symbols
         - include: pop_at_boundary
-        - match: '\w+'
-          scope: string.unquoted.dtk-symbols
 
-    - match: '(size)(:)'
-      captures:
-        1: entity.other.attribute-name.size.dtk-symbols
-        2: punctuation.separator.key-value.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
-        - include: numbers
-
-    - match: '(scope)(:)'
-      captures:
-        1: entity.other.attribute-name.scope.dtk-symbols
-        2: punctuation.separator.key-value.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
-        - match: '\w+'
-          scope: string.unquoted.dtk-symbols
-
-    - match: '(align)(:)'
-      captures:
-        1: entity.other.attribute-name.align.dtk-symbols
-        2: punctuation.separator.key-value.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
-        - include: numbers
-
-    - match: '(data)(:)'
-      captures:
-        1: entity.other.attribute-name.data.dtk-symbols
-        2: punctuation.separator.key-value.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
-        - match: '\w+'
-          scope: string.unquoted.dtk-symbols
-
-    # unknown key-value attributes
-    - match: '(\w+)(:)'
+    # number kv-attrs
+    - match: '({{symbol_kv_attr_number_value}})(:)'
       captures:
         1: entity.other.attribute-name.dtk-symbols
         2: punctuation.separator.key-value.dtk-symbols
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
+        - include: numbers
         - include: pop_at_boundary
-        - match: '\S+'
-          scope: string.unquoted.dtk-symbols
 
-    - match: 'hidden'
-      scope: entity.other.attribute-name.hidden.dtk-symbols
+    # other kv-attrs
+    - match: '({{attr_identifier}})(:)'
+      captures:
+        1: entity.other.attribute-name.dtk-splits
+        2: punctuation.separator.dtk-splits
       push:
         - clear_scopes: 1
         - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
+        - meta_content_scope: string.unquoted.dtk-splits
         - include: pop_at_boundary
 
-    - match: 'noreloc'
-      scope: entity.other.attribute-name.noreloc.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
-
-    # unknown key-only attributes
-    - match: '\w+'
-      scope: entity.other.attribute-name.dtk-symbols
-      push:
-        - clear_scopes: 1
-        - meta_scope: meta.symbol.attribute-list.attribute.dtk-symbols
-        - include: pop_at_boundary
+    # other k-attrs
+    - match: '({{attr_identifier}})'
+      scope: meta.symbol.attribute-list.attribute.dtk-symbols
+             entity.other.attribute-name.dtk-splits
 
     - match: '$'
       pop: 2
