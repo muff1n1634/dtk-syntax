@@ -6,6 +6,12 @@ Contains `.sublime-syntax` (`sublime/`) and `.YAML-tmLanguage` (`vscode/`) synta
 - [Sublime Text 4](https://sublimetext.com)
 - [Visual Studio Code](https://code.visualstudio.com)
 
+## Installation
+
+`dtk-syntax` is available on the [Visual Studio Marketplace](https://marketplace.visualstudio.com/) as [`decomp-dev.dtk-syntax`](https://marketplace.visualstudio.com/items?itemName=decomp-dev.dtk-syntax).
+
+For manual installation from releases, follow the instructions on the release notes.
+
 ## Building
 
 ### Prerequisites
@@ -35,6 +41,5 @@ Press <kbd>Primary</kbd>+<kbd>B</kbd> to build while in the view of the `.YAML-t
 ---
 
 #### To-do list
-- ~~VSCode support~~
 - pictures
 - ???
